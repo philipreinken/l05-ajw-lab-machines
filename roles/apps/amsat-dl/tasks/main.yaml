@@ -1,0 +1,22 @@
+---
+
+- name: Setup AmSat-DL TRX software
+  block:
+    - name: Ensure git target directory exists
+      ansible.builtin.file:
+        path: '{{ amsat_dl_repo_dest }}'
+        state: directory
+        mode: '0755'
+
+    - name: Clone AmSat-DL QO-100 repo
+      ansible.builtin.git:
+        repo: '{{ amsat_dl_repo_src }}'
+        dest: '{{ amsat_dl_repo_dest }}'
+        version: '{{ amsat_dl_repo_version | default("main") }}'
+
+    #- name: Build AmSat-DL QO-100 software
+    #  ansible.builtin.command:
+    #    cmd: 'make'
+    #    chdir: '{{ amsat_dl_repo_dest }}'
+    #  args:
+    #    warn: false

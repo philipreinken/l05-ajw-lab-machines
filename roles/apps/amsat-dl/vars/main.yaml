@@ -1,0 +1,5 @@
+---
+
+amsat_dl_repo_src: 'https://github.com/dj0abr/QO100_Transceiver.git'
+amsat_dl_repo_dest: '/home/{{ classroom.user.name }}/.local/share/amsat-dl-repo'
+amsat_dl_repo_version: '286b24107f7bd03ce1fb91d680f2daa9b7080910'

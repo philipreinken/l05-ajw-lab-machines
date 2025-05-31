@@ -1,0 +1,9 @@
+---
+
+- name: Install software packages for general usage
+  become: true
+  block:
+    - name: Install git
+      ansible.builtin.package:
+        name: git
+        state: present

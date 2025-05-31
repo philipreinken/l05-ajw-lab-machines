@@ -1,0 +1,17 @@
+---
+
+- name: Setup flatpak
+  block:
+    - name: Ensure flatpak is installed
+      become: true
+      become_user: root
+      ansible.builtin.package:
+        name: flatpak
+        state: present
+
+    - name: Ensure flathub remote is present
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user

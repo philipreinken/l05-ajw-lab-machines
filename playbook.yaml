@@ -1,0 +1,15 @@
+---
+
+- hosts: all
+  roles:
+    - general/classroom
+    - role: geerlingguy.security
+      become: true
+
+- hosts: classroom
+  become: true
+  become_user: '{{ classroom.user.name }}'
+  roles:
+    - general/flatpak
+    - apps/sdrangel
+    - apps/amsat-dl

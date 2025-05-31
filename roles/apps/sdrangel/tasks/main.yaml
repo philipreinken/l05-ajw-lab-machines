@@ -1,0 +1,10 @@
+---
+
+- name: Setup SDRAngel
+  block:
+    - name: Install SDRAngel flatpak
+      community.general.flatpak:
+        name:
+          - org.sdrangel.SDRangel
+        state: present
+        method: user

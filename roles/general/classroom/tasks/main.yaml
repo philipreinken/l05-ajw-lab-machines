@@ -1,0 +1,4 @@
+---
+
+- include_tasks: user.yaml
+- include_tasks: software.yaml
