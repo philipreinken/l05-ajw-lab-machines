@@ -1,0 +1,21 @@
+---
+
+- name: Create .desktop files for applications
+  block:
+    - name: Ensure ~/.local/share/applications exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/share/applications"
+        state: directory
+        mode: '0755'
+
+    - name: Create .desktop file for {{ item.name }}
+      ansible.builtin.copy:
+        dest: "{{ ansible_env.HOME }}/.local/share/applications/{{ item.name | lower | replace(' ', '-') }}.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name={{ item.name }}
+          Exec={{ item.exec }}
+          Icon={{ item.icon }}
+        mode: '0644'
+      loop: '{{ desktop_entries }}'

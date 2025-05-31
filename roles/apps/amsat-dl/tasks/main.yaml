@@ -8,15 +8,43 @@
         state: directory
         mode: '0755'
 
+    - name: Check whether repo is present already
+      ansible.builtin.stat:
+        path: '{{ amsat_dl_repo_dest }}/.git'
+      register: amsat_dl_repo_stat
+
+    - name: Check whether executable is present already
+      ansible.builtin.stat:
+        path: '{{ amsat_dl_repo_dest }}/Release/qo100trx.exe'
+      register: amsat_dl_exe_stat
+
     - name: Clone AmSat-DL QO-100 repo
       ansible.builtin.git:
         repo: '{{ amsat_dl_repo_src }}'
         dest: '{{ amsat_dl_repo_dest }}'
         version: '{{ amsat_dl_repo_version | default("main") }}'
+      when: not amsat_dl_repo_stat.stat.exists
 
-    #- name: Build AmSat-DL QO-100 software
-    #  ansible.builtin.command:
-    #    cmd: 'make'
-    #    chdir: '{{ amsat_dl_repo_dest }}'
-    #  args:
-    #    warn: false
+    - name: Prepare, build and install
+      async: 1000
+      poll: 0
+      ansible.builtin.shell:
+        executable: /bin/bash
+        chdir: '{{ amsat_dl_repo_dest }}'
+        cmd: |
+          pushd scripts
+          ./prepare_ubuntu_pluto
+          ./makeall
+      register: amsat_dl_build
+      when: not amsat_dl_exe_stat.stat.exists
+
+    - name: Wait for AmSat-DL build to complete
+      ansible.builtin.async_status:
+        jid: '{{ amsat_dl_build.ansible_job_id }}'
+      register: job_result
+      until: job_result.finished
+      retries: 30
+      when: not amsat_dl_exe_stat.stat.exists
+
+    - include_tasks: desktop.yaml
+      when: amsat_dl_exe_stat.stat.exists

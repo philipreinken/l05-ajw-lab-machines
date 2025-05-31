@@ -1,0 +1,21 @@
+---
+
+- name: Install DARC e.V. wallpaper
+  block:
+    - name: Ensure target directory exists
+      ansible.builtin.file:
+        path: '{{ ansible_env.HOME }}/.local/share/backgrounds'
+        state: directory
+        mode: '0755'
+
+    - name: Copy wallpaper
+      ansible.builtin.copy:
+        src: files/wallpaper.png
+        dest: '{{ ansible_env.HOME }}/.local/share/backgrounds/wallpaper.png'
+        mode: '0644'
+
+    - name: Set wallpaper
+      ansible.builtin.dconf:
+        key: '/org/gnome/desktop/background/picture-uri'
+        value: >-
+          'file://{{ ansible_env.HOME }}/.local/share/backgrounds/wallpaper.png'

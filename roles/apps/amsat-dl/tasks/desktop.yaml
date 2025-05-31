@@ -1,0 +1,9 @@
+---
+
+- ansible.builtin.include_role:
+    name: general/dot-desktop
+  vars:
+    desktop_entries:
+      - name: 'QO-100 Transceiver'
+        exec: 'mono {{ amsat_dl_repo_dest }}/Release/qo100trx.exe'
+        icon: 'amsat-dl'

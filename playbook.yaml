@@ -1,15 +1,24 @@
 ---
 
-- hosts: all
+- name: Basic setup
+  hosts: all
   roles:
     - general/classroom
     - role: geerlingguy.security
       become: true
 
-- hosts: classroom
+- name: Install applications
+  hosts: classroom
   become: true
   become_user: '{{ classroom.user.name }}'
   roles:
     - general/flatpak
-    - apps/sdrangel
-    - apps/amsat-dl
+    - general/wallpaper
+    - role: apps/sdrangel
+      tags:
+        - apps
+        - sdrangel
+    - role: apps/amsat-dl
+      tags:
+        - apps
+        - amsat-dl
