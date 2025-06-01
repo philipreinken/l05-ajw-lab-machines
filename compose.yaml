@@ -1,0 +1,59 @@
+---
+
+services:
+  base:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM debian:bookworm-slim
+        RUN <<EOF
+        apt update
+        apt upgrade -y --autoremove
+        apt install -y \
+          curl \
+          iproute2 \
+          unzip \
+          jq
+
+        apt-get clean
+        
+        curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.45.4/yq_linux_amd64" -o /usr/local/bin/yq
+        chmod +x /usr/local/bin/yq
+        EOF
+    user: ${UID}:${GID}
+    working_dir: /wd
+    volumes:
+      - .:/wd
+    network_mode: host
+
+  bash:
+    extends: base
+    entrypoint: bash
+
+  unzip:
+    extends: base
+    entrypoint: unzip
+
+  eps2svg:
+    extends: base
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM base
+        RUN <<EOF
+        apt install -y \
+          geg \
+          texlive-latex-recommended \
+          imagemagick \
+          poppler-utils \
+          fonts-roboto
+
+        apt-get clean
+        EOF
+      additional_contexts:
+        base: service:base
+    entrypoint: eps2svg
+
+  convert:
+    extends: eps2svg
+    entrypoint: convert

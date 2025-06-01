@@ -20,10 +20,6 @@ function ip_for_mac() {
   echo "$ip"
 }
 
-function test() {
-  jq -n '{ classroom: { hosts: { "l05-001": { ansible_user: "schule", ansible_host: "192.168.178.107", security_ssh_allowed_users: [ "schule", "L05" ] } } } }' | yq -pjson
-}
-
 function lab_machines() {
   while read -r -a line; do
     jq -n \
