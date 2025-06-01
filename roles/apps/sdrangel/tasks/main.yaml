@@ -8,3 +8,5 @@
           - org.sdrangel.SDRangel
         state: present
         method: user
+
+    - include_tasks: desktop.yaml

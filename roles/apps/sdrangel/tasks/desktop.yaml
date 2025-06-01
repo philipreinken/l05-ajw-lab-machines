@@ -1,0 +1,9 @@
+---
+
+- name: Create desktop entry for SDRangel
+  ansible.builtin.include_role:
+    name: general/dot-desktop
+  vars:
+    desktop_entries:
+      - name: 'SDRangel'
+        existing_file: '{{ ansible_env.HOME }}/.local/share/flatpak/app/org.sdrangel.SDRangel/current/active/export/share/applications/org.sdrangel.SDRangel.desktop'

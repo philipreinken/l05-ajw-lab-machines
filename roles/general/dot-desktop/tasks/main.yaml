@@ -1,6 +1,7 @@
 ---
 
 - name: Create .desktop files for applications
+  when: desktop_entries | length > 0
   block:
     - name: Ensure ~/.local/share/applications exists
       ansible.builtin.file:
@@ -17,5 +18,28 @@
           Name={{ item.name }}
           Exec={{ item.exec }}
           Icon={{ item.icon }}
-        mode: '0644'
+          Terminal=false
+        mode: '0755'
+      loop: '{{ desktop_entries }}'
+      when: item.existing_file is not defined
+
+    - name: Update desktop database
+      changed_when: false
+      ansible.builtin.command:
+        cmd: >-
+          update-desktop-database {{ ansible_env.HOME }}/.local/share/applications
+
+    - name: Link application on the Desktop
+      ansible.builtin.file:
+        src: "{{ item.existing_file | default(ansible_env.HOME + '/.local/share/applications/' + item.name | lower | replace(' ', '-') + '.desktop') }}"
+        dest: "{{ ansible_env.HOME }}/Schreibtisch/{{ item.name | lower | replace(' ', '-') }}.desktop"
+        state: link
+        mode: '0755'
+      loop: '{{ desktop_entries }}'
+
+    - name: Allow launching the application from the Desktop
+      changed_when: false
+      ansible.builtin.command:
+        cmd: >-
+          dbus-launch gio set {{ ansible_env.HOME }}/Schreibtisch/{{ item.name | lower | replace(' ', '-') }}.desktop metadata::trusted true
       loop: '{{ desktop_entries }}'
