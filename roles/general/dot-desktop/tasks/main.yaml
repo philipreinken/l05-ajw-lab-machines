@@ -9,6 +9,12 @@
         state: directory
         mode: '0755'
 
+    - name: Ensure Desktop directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/Schreibtisch"
+        state: directory
+        mode: '0755'
+
     - name: Create .desktop file for {{ item.name }}
       ansible.builtin.copy:
         dest: "{{ ansible_env.HOME }}/.local/share/applications/{{ item.name | lower | replace(' ', '-') }}.desktop"

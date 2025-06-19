@@ -22,6 +22,7 @@ function ip_for_mac() {
 
 function lab_machines() {
   while read -r -a line; do
+    echo "Processing MAC: ${line[0]}, Hostname: ${line[1]}" >&2
     jq -n \
       --arg mac "${line[0]}" \
       --arg hostname "${line[1]}" \

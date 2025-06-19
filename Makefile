@@ -1,7 +1,10 @@
 
-.PHONY: apply inventory.yaml
+.PHONY: apply .make.inventory-macs.txt.asc
 
 COMPOSE_RUN = docker compose run --rm
+
+.make.inventory-macs.txt.asc:
+	gpg -r 0x4F212E8A056A0CCC --armor --encrypt-files inventory-macs.txt
 
 inventory-macs.txt: inventory-macs.txt.asc
 	gpg --decrypt $< > $@

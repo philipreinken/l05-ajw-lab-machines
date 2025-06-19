@@ -43,7 +43,7 @@
         jid: '{{ amsat_dl_build.ansible_job_id }}'
       register: job_result
       until: job_result.finished
-      retries: 30
+      retries: 600
       when: not amsat_dl_exe_stat.stat.exists
 
     - include_tasks: desktop.yaml
