@@ -1,7 +1,10 @@
 ---
 
 services:
+  #############################################################################
+  # Profile: make
   base:
+    profiles: [ make ]
     build:
       context: .
       dockerfile_inline: |
@@ -57,3 +60,46 @@ services:
   convert:
     extends: eps2svg
     entrypoint: convert
+
+  #############################################################################
+  # Profile: default
+  semaphore_db:
+    image: mysql:8
+    environment:
+      MYSQL_USER: semaphore
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: semaphore
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+    volumes:
+      - semaphore_mysql:/var/lib/mysql
+    networks:
+      - semaphore_network
+  semaphore:
+    ports:
+      - 3000:3000
+    depends_on:
+      - semaphore_db
+    image: semaphoreui/semaphore:v2.15.0
+    environment:
+      SEMAPHORE_DB_DIALECT: mysql
+      SEMAPHORE_DB_HOST: semaphore_db
+      SEMAPHORE_DB_NAME: semaphore
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: password
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ADMIN_PASSWORD: password
+      SEMAPHORE_ADMIN_NAME: Admin
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+    volumes:
+      - semaphore_data:/var/lib/semaphore
+      - semaphore_config:/etc/semaphore
+    networks:
+      - semaphore_network
+
+volumes:
+  semaphore_data:
+  semaphore_config:
+  semaphore_mysql:
+
+networks:
+  semaphore_network: { driver: "bridge" }
