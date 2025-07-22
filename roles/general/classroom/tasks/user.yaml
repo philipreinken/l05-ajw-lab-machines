@@ -6,7 +6,7 @@
       become: true
       ansible.builtin.user:
         name: '{{ classroom.user.name | mandatory }}'
-        groups: 'adm,cdrom,sudo,dip,plugdev,lpadmin,lxd,sambashare'
+        groups: 'adm,cdrom,sudo,dip,plugdev,lpadmin,lxd'
         shell: '/bin/bash'
         create_home: true
         password: ''

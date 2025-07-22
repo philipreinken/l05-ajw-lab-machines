@@ -22,3 +22,7 @@
       tags:
         - apps
         - amsat-dl
+    - role: apps/arduino-ide
+      tags:
+        - apps
+        - arduino-ide
