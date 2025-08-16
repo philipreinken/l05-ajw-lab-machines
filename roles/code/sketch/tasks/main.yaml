@@ -1,0 +1,33 @@
+---
+
+- name: Initialise sketch directory
+  block:
+    - name: Ensure empty sketch directory exists
+      when: sketch_init | bool
+      ansible.builtin.file:
+        path: '{{ sketch_dir }}'
+        state: '{{ item }}'
+        mode: '0755'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+      with_items:
+        - absent
+        - directory
+
+    - name: Initialise repo
+      when: git_init | bool
+      shell: |
+        git init -b main
+        git config core.sparsecheckout true
+        git remote add origin {{ sketch_repo_url }}
+      args:
+        chdir: '{{ sketch_dir }}'
+        creates: '{{ sketch_dir }}/.git'
+
+    - name: Checkout course
+      shell: |
+        git sparse-checkout set "{{ sketch_course | default("ElektronikWerkstatt I/S1-Hello_Blink") }}"
+        git fetch origin
+        get reset --hard origin/main
+      args:
+        chdir: '{{ sketch_dir }}'
