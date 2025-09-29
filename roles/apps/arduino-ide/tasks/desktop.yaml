@@ -1,0 +1,9 @@
+---
+
+- name: Create desktop entry for Arduino IDE
+  ansible.builtin.include_role:
+    name: general/dot-desktop
+  vars:
+    desktop_entries:
+      - name: 'Arduino IDE'
+        existing_file: '{{ ansible_env.HOME }}/.local/share/flatpak/app/cc.arduino.IDE2/current/active/export/share/applications/cc.arduino.IDE2.desktop'

@@ -1,0 +1,12 @@
+---
+
+- name: Setup Arduino IDE
+  block:
+    - name: Install Arduino IDE v2 flatpak
+      community.general.flatpak:
+        name:
+          - cc.arduino.IDE2
+        state: present
+        method: user
+
+    - include_tasks: desktop.yaml

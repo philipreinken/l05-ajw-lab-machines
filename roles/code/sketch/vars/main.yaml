@@ -1,0 +1,13 @@
+---
+
+sketch_dir: '{{ ansible_env.HOME }}/Arduino'
+sketch_init: false
+git_init: true
+
+sketch_repo_auth_itemid: '809f1cff-60da-46ed-b0f3-b33b00d05906'
+sketch_repo_user: '{{ lookup("community.general.bitwarden", sketch_repo_auth_itemid, search="id", field="username") | first | mandatory }}'
+sketch_repo_pass: '{{ lookup("community.general.bitwarden", sketch_repo_auth_itemid, search="id", field="password") | first | mandatory }}'
+sketch_repo_auth: '{{ sketch_repo_user }}:{{ sketch_repo_pass }}'
+sketch_repo_url: 'https://{{ sketch_repo_auth}}@github.com/philipreinken/l05-ajw-sketches-electronics-lab.git'
+
+sketch_course: ''
