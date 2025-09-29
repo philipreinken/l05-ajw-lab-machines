@@ -6,3 +6,4 @@ metadata:
 spec:
   service_type: nodeport
   nodeport_port: 32000
+  no_log: false
