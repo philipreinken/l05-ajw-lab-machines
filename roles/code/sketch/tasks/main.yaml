@@ -28,6 +28,6 @@
       shell: |
         git sparse-checkout set "{{ sketch_course | default("ElektronikWerkstatt I/S1-Hello_Blink") }}"
         git fetch origin
-        get reset --hard origin/main
+        git reset --hard origin/main
       args:
         chdir: '{{ sketch_dir }}'
