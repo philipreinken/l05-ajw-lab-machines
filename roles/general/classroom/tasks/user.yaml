@@ -11,11 +11,6 @@
         create_home: true
         password: ''
 
-    #- name: Unset password (might not be needed)
-    #  become: true
-    #  ansible.builtin.command:
-    #    cmd: 'passwd -d {{ classroom.user.name | mandatory }}'
-
     - name: Ensure SSH keys of all classroom admins are present in authorized_keys
       become: true
       ansible.posix.authorized_key:

@@ -1,12 +1,5 @@
 ---
 
-- name: Basic setup
-  hosts: all
-  roles:
-    - general/classroom
-    - role: geerlingguy.security
-      become: true
-
 - name: Install applications
   hosts: classroom
   become: true

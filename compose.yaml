@@ -13,7 +13,8 @@ services:
           curl \
           iproute2 \
           unzip \
-          jq
+          jq \
+          arp-scan
 
         apt-get clean
         

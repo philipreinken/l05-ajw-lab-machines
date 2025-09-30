@@ -2,6 +2,7 @@
 .PHONY: apply sketch .make.inventory-macs.txt.asc
 
 COMPOSE_RUN = docker compose run --rm
+COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
 
 .make.inventory-macs.txt.asc:
 	gpg -r 0x4F212E8A056A0CCC --armor --encrypt-files inventory-macs.txt
@@ -10,7 +11,8 @@ inventory-macs.txt: inventory-macs.txt.asc
 	gpg --decrypt $< > $@
 
 inventory.yaml: inventory.sh inventory-macs.txt
-	$(COMPOSE_RUN) bash $< > $@
+	$(COMPOSE_RUN_PRIVILEGED) bash $< > $@
+	$(COMPOSE_RUN_PRIVILEGED) bash -c "chown $(shell id -u):$(shell id -g) .arp-cache"
 
 files/darc/%.eps: files/DARC_Logo_und_Raute.zip # https://www.darc.de/presse/downloads/#c154010
 	$(COMPOSE_RUN) unzip -o $< -d files/darc

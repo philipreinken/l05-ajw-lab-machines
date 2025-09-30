@@ -2,9 +2,17 @@
 set -euo pipefail
 
 function arp_scan() {
+  local arp_scan_cmd;
+
+  if [ "$(id -u)" -ne 0 ]; then
+    arp_scan_cmd="sudo arp-scan"
+  else
+    arp_scan_cmd="arp-scan"
+  fi
+
   if [ ! -f ".arp-cache" ]; then
     echo "Running arp-scan to populate .arp-cache file..." >&2
-    sudo arp-scan --localnet | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
+    ${arp_scan_cmd} --localnet | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
   else
     echo ".arp-cache file already exists, skipping arp-scan." >&2
   fi

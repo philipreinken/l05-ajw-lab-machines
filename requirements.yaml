@@ -1,15 +1,9 @@
 ---
 
 collections:
-  - name: grafana.grafana
-    version: 5.6.0
-
   - name: community.general
     version: 10.7.0
 
 roles:
   - name: geerlingguy.security
     version: 2.4.0
-    
-  - name: artis3n.tailscale
-    version: v4.5.0

@@ -1,0 +1,8 @@
+---
+
+- name: Basic setup
+  hosts: all
+  roles:
+    - role: geerlingguy.security
+      become: true
+    - general/classroom
