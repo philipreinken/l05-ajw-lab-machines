@@ -10,6 +10,9 @@
         shell: '/bin/bash'
         create_home: true
         password: ''
+        remove: '{{ destroy | bool }}'
+        force: '{{ destroy | bool }}'
+        state: '{{ "absent" if destroy | bool else "present" }}'
 
     - name: Ensure SSH keys of all classroom admins are present in authorized_keys
       become: true
@@ -18,5 +21,6 @@
         state: present
         key: '{{ item.ssh_key | mandatory }}'
       loop: '{{ classroom.admin | default([]) }}'
+      when: not destroy | bool
 
 

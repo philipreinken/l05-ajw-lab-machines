@@ -5,4 +5,4 @@
   roles:
     - role: geerlingguy.security
       become: true
-    - general/classroom
+    - role: general/classroom

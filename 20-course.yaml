@@ -1,0 +1,11 @@
+---
+
+- name: Initialize sketches
+  hosts: classroom
+  become: true
+  become_user: '{{ classroom.user.name }}'
+  roles:
+    - role: code/sketch
+      vars:
+        sketch_init: true
+        git_init: true

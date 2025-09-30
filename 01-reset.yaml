@@ -1,0 +1,8 @@
+---
+
+- name: Reset
+  hosts: all
+  roles:
+    - role: general/classroom
+      vars:
+        destroy: true

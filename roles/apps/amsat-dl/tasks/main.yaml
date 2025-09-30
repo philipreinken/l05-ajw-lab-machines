@@ -47,4 +47,4 @@
       when: not amsat_dl_exe_stat.stat.exists
 
     - include_tasks: desktop.yaml
-      when: amsat_dl_exe_stat.stat.exists
+      when: amsat_dl_exe_stat.stat.exists or job_result.finished

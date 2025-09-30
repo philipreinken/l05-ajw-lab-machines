@@ -1,8 +1,12 @@
 
 .PHONY: apply sketch .make.inventory-macs.txt.asc
 
+ANSIBLE_INVENTORY = inventory.yaml
+
 COMPOSE_RUN = docker compose run --rm
 COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
+
+export ANSIBLE_INVENTORY
 
 .make.inventory-macs.txt.asc:
 	gpg -r 0x4F212E8A056A0CCC --armor --encrypt-files inventory-macs.txt
@@ -10,7 +14,7 @@ COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
 inventory-macs.txt: inventory-macs.txt.asc
 	gpg --decrypt $< > $@
 
-inventory.yaml: inventory.sh inventory-macs.txt
+$(ANSIBLE_INVENTORY): inventory.sh inventory-macs.txt
 	$(COMPOSE_RUN_PRIVILEGED) bash $< > $@
 	$(COMPOSE_RUN_PRIVILEGED) bash -c "chown $(shell id -u):$(shell id -g) .arp-cache"
 
@@ -23,11 +27,20 @@ files/darc/%.svg: files/darc/%.eps
 files/wallpaper.png: files/darc/DARC_Raute.svg
 	$(COMPOSE_RUN) convert -resize 500x500 -background none $< -background "#231F20" -gravity center -extent 1920x1080 -font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 36 -fill white -draw "text 0,300 'L05'" $@
 
-apply: inventory.yaml playbook.yaml
-	ansible-playbook -i inventory.yaml playbook.yaml
+setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png
+	ansible-playbook $<
 
-sketch-init: inventory.yaml sketch-init.yaml
-	ansible-playbook -i inventory.yaml sketch-init.yaml -e git_init="true" -e sketch_init="true" -e 'sketch_course="$(COURSE)"'
+reset: 01-reset.yaml $(ANSIBLE_INVENTORY)
+	ansible-playbook $<
 
-sketch: inventory.yaml sketch-init.yaml
-	ansible-playbook --verbose -i inventory.yaml sketch-init.yaml -e git_init="false" -e sketch_init="false" -e 'sketch_course="$(COURSE)"'
+applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
+	ansible-playbook $<
+
+sketch-init: 20-course.yaml $(ANSIBLE_INVENTORY)
+	ansible-playbook $<
+
+sketch: 21-course-sketches.yaml $(ANSIBLE_INVENTORY)
+	ansible-playbook $< -e 'sketch_course="$(COURSE)"'
+
+.PHONY: apply
+apply: setup applications sketch-init
