@@ -45,4 +45,4 @@ sketch: 21-course-sketches.yaml $(ANSIBLE_INVENTORY)
 course-files: course sketch
 
 .PHONY: apply
-apply: setup applications sketch-init
+apply: setup applications course-files
