@@ -36,11 +36,13 @@ reset: 01-reset.yaml $(ANSIBLE_INVENTORY)
 applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
 	ansible-playbook $<
 
-sketch-init: 20-course.yaml $(ANSIBLE_INVENTORY)
+course: 20-course.yaml $(ANSIBLE_INVENTORY)
 	ansible-playbook $<
 
 sketch: 21-course-sketches.yaml $(ANSIBLE_INVENTORY)
 	ansible-playbook $< -e 'sketch_course="$(COURSE)"'
+
+course-files: course sketch
 
 .PHONY: apply
 apply: setup applications sketch-init
