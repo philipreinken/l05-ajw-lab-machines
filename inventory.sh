@@ -12,7 +12,8 @@ function arp_scan() {
 
   if [ ! -f ".arp-cache" ]; then
     echo "Running arp-scan to populate .arp-cache file..." >&2
-    ${arp_scan_cmd} --localnet | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
+    # --retry is used to improve reliability; higher values increase scan time
+    ${arp_scan_cmd} --localnet --retry=4 | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
   else
     echo ".arp-cache file already exists, skipping arp-scan." >&2
   fi
@@ -59,7 +60,7 @@ function lab_machines() {
 }
 
 function inventory() {
-    lab_machines | jq -s '{ classroom: { hosts: .[] | add } }' | yq -pjson -o=yaml
+    lab_machines | jq -s '{ classroom: { hosts: .[] | add } }' | yq -p=json -o=yaml
 }
 
 inventory
