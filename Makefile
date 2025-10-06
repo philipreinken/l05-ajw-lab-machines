@@ -1,7 +1,7 @@
 
 .PHONY: apply sketch .make.inventory-macs.txt.asc
 
-ANSIBLE_INVENTORY = inventory.yaml
+ANSIBLE_INVENTORY = inventory.sh
 
 COMPOSE_RUN = docker compose run --rm
 COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
@@ -13,10 +13,6 @@ export ANSIBLE_INVENTORY
 
 inventory-macs.txt: inventory-macs.txt.asc
 	gpg --decrypt $< > $@
-
-$(ANSIBLE_INVENTORY): inventory.sh inventory-macs.txt
-	$(COMPOSE_RUN_PRIVILEGED) bash $< > $@
-	$(COMPOSE_RUN_PRIVILEGED) bash -c "chown $(shell id -u):$(shell id -g) .arp-cache"
 
 files/darc/%.eps: files/DARC_Logo_und_Raute.zip # https://www.darc.de/presse/downloads/#c154010
 	$(COMPOSE_RUN) unzip -o $< -d files/darc
