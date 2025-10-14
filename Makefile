@@ -27,26 +27,30 @@ files/wallpaper.png: files/darc/DARC_Raute.svg
 
 .PHONY: setup
 setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png
-	ansible-playbook --verbose $<
+	ansible-playbook $<
 
 .PHONY: reset
 reset: 01-reset.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook --verbose $<
+	ansible-playbook $<
 
 .PHONY: applications
 applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook --verbose $<
+	ansible-playbook $<
 
 .PHONY: course
 course: 20-course.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook --verbose $<
+	ansible-playbook $<
 
 .PHONY: sketch
 sketch: 21-course-sketches.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook --verbose $< -e 'sketch_course="$(COURSE)"'
+	ansible-playbook $<
 
 .PHONY: course-files
-course-files: course sketch libraries
+course-files: course sketch
 
 .PHONY: apply
 apply: setup applications course-files
+
+.PHONY: shutdown
+shutdown: $(ANSIBLE_INVENTORY)
+	ansible all -b -m community.general.shutdown

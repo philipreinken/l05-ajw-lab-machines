@@ -8,6 +8,6 @@
     - role: code
       vars:
         code_dir: '{{ ansible_env.HOME }}/Dokumente'
-        code_init: false
+        code_init: true
         git_init: true
         repo_subdir: 'ElektronikWerkstatt/'

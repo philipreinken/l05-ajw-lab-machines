@@ -10,4 +10,4 @@
         code_dir: '{{ ansible_env.HOME }}/Arduino'
         code_init: true
         git_init: true
-        repo_subdir: 'Arduino/'
+        repo_subdir: 'Arduino/*'
