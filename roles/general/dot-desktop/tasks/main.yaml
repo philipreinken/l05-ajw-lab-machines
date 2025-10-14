@@ -49,3 +49,4 @@
         cmd: >-
           dbus-launch gio set {{ ansible_env.HOME }}/Schreibtisch/{{ item.name | lower | replace(' ', '-') }}.desktop metadata::trusted true
       loop: '{{ desktop_entries }}'
+      ignore_errors: true

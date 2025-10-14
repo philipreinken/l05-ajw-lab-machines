@@ -9,4 +9,5 @@
           - git
           - python3-psutil
           - esptool
+          # - dbus-x11 some 22.04 hosts dont have this
         state: '{{ "absent" if destroy | bool else "present" }}'

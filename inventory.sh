@@ -23,7 +23,7 @@ function arp_scan() {
 
   if [ ! -f ".arp-cache" ]; then
     # --retry is used to improve reliability; higher values increase scan time
-    ${arp_scan_cmd} --localnet --retry=4 | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
+    ${arp_scan_cmd} --localnet --retry=8 | awk '/^[0-9]/ {print $1, $2}' | uniq | sort -u | tee .arp-cache
   fi
 
   cat .arp-cache
