@@ -4,9 +4,8 @@ code_dir: '{{ ansible_env.HOME }}/.local/share/l05-ajw-sketches-electronics-lab'
 code_reset: false
 code_copy_only: false
 
-code_repo_auth_itemid: '809f1cff-60da-46ed-b0f3-b33b00d05906' # TODO: Move to vault
-code_repo_user: '{{ lookup("community.general.bitwarden", code_repo_auth_itemid, search="id", field="username") | first | mandatory }}'
-code_repo_pass: '{{ lookup("community.general.bitwarden", code_repo_auth_itemid, search="id", field="password") | first | mandatory }}'
+code_repo_user: '{{ vault_code_repo_user | mandatory }}'
+code_repo_pass: '{{ vault_code_repo_pass | mandatory }}'
 code_repo_auth: '{{ code_repo_user }}:{{ code_repo_pass }}'
 code_repo_url: 'https://{{ code_repo_auth }}@github.com/philipreinken/l05-ajw-sketches-electronics-lab.git'
 

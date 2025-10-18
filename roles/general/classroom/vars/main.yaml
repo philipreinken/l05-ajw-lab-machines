@@ -2,5 +2,4 @@
 
 destroy: false
 
-admin_ssh_key_itemid: '387751a5-b223-44d9-95ca-b36e00c8560b' # TODO: Move to vault
-admin_ssh_key: '{{ (lookup("community.general.bitwarden", admin_ssh_key_itemid, search="id") | first | mandatory).sshKey }}'
+admin_ssh_key: '{{ vault_admin_ssh_key | mandatory }}'
