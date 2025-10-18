@@ -71,12 +71,12 @@ function inventory() {
   full_info | jq -s '{ _meta: { hostvars: .[] | map( { (.inventory_hostname | tostring): . } ) | add }, all: { children: [ "classroom" ] }, classroom: { hosts: .[] | map( .inventory_hostname ) } }'
 }
 
-#function override() {
-#  jq '._meta.hostvars["l05_000"].ansible_user = "preinstalled"'
-#}
+function override() {
+  jq '._meta.hostvars["l05_000"].ansible_user = "preinstalled" | ._meta.hostvars["l05_000"].security_ssh_allowed_users = ["preinstalled", "L05"]'
+}
 
 function main() {
-  inventory # | override
+  inventory | override
 }
 
 main "${@}"

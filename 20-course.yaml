@@ -7,7 +7,10 @@
   roles:
     - role: code
       vars:
-        code_dir: '{{ ansible_env.HOME }}/Dokumente'
-        code_init: true
-        git_init: true
-        repo_subdir: 'ElektronikWerkstatt/'
+        code_distribution:
+          - src: 'ElektronikWerkstatt/'
+            dest: '{{ ansible_env.HOME }}/Dokumente/ElektronikWerkstatt'
+          - src: 'Arduino/sketchbook/'
+            dest: '{{ ansible_env.HOME }}/Arduino/sketchbook'
+          - src: 'Arduino/libraries/'
+            dest: '{{ ansible_env.HOME }}/Arduino/libraries'

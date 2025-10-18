@@ -1,9 +1,15 @@
 ---
 
 - name: Initialise code directory
+  when: not code_copy_only | default(false) | bool
   block:
+    - name: Check whether code_dir exists
+      ansible.builtin.stat:
+        path: '{{ code_dir }}'
+      register: code_dir_stat
+
     - name: Ensure empty code directory exists
-      when: code_init | bool
+      when: not code_dir_stat.stat.exists | bool or code_reset | bool
       ansible.builtin.file:
         path: '{{ code_dir }}'
         state: '{{ item }}'
@@ -14,20 +20,41 @@
         - absent
         - directory
 
-    - name: Initialise repo
-      when: git_init | bool
-      shell: |
-        git init -b main
-        git config core.sparseCheckout true
-        git remote add origin {{ code_repo_url }}
-      args:
-        chdir: '{{ code_dir }}'
-        creates: '{{ code_dir }}/.git'
+    - name: Checkout repository
+      ansible.builtin.git:
+        repo: '{{ code_repo_url }}'
+        dest: '{{ code_dir }}'
+        version: main
+        single_branch: true
 
-    - name: Checkout course
-      shell: |
-        git sparse-checkout set --no-cone "{{ repo_subdir | default("sketchbook/") }}"
-        git fetch origin
-        git reset --hard origin/main
-      args:
-        chdir: '{{ code_dir }}'
+- name: Copy to destination directories
+  when: code_distribution is defined and code_distribution | length > 0
+  block:
+    - name: Ensure destination directories are absent
+      ansible.builtin.file:
+        path: '{{ item.dest }}'
+        state: absent
+        mode: '0755'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+      loop: '{{ code_distribution }}'
+
+    - name: Ensure destination directories exist
+      ansible.builtin.file:
+        path: '{{ item.dest }}'
+        state: directory
+        mode: '0755'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+      loop: '{{ code_distribution }}'
+
+    - name: Copy files to destination directories
+      ansible.builtin.copy:
+        remote_src: true
+        src: '{{ code_dir }}/{{ item.src }}'
+        dest: '{{ item.dest }}'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: preserve
+        directory_mode: '0755'
+      loop: '{{ code_distribution }}'

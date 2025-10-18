@@ -1,6 +1,4 @@
 
-.PHONY: apply sketch .make.inventory-macs.txt.asc
-
 ANSIBLE_INVENTORY = inventory.sh
 ANSIBLE_HOST_KEY_CHECKING = False
 
@@ -10,6 +8,7 @@ COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
 export ANSIBLE_INVENTORY
 export ANSIBLE_HOST_KEY_CHECKING
 
+.PHONY: .make.inventory-macs.txt.asc
 .make.inventory-macs.txt.asc:
 	gpg -r 0x4F212E8A056A0CCC --armor --encrypt-files inventory-macs.txt
 
@@ -39,17 +38,14 @@ applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
 
 .PHONY: course
 course: 20-course.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook $<
+	ansible-playbook -v $<
 
-.PHONY: sketch
-sketch: 21-course-sketches.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook $<
+.PHONY: course-copy-only
+course-copy-only: 20-course.yaml $(ANSIBLE_INVENTORY)
+	ansible-playbook -v $< -e code_copy_only=true
 
-.PHONY: course-files
-course-files: course sketch
-
-.PHONY: apply
-apply: setup applications course-files
+.PHONY: full
+full: setup applications course
 
 .PHONY: shutdown
 shutdown: $(ANSIBLE_INVENTORY)
