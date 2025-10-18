@@ -22,7 +22,7 @@ files/darc/%.svg: files/darc/%.eps
 	$(COMPOSE_RUN) eps2svg $< $@
 
 files/wallpaper.png: files/darc/DARC_Raute.svg
-	$(COMPOSE_RUN) convert -resize 500x500 -background none $< -background "#231F20" -gravity center -extent 1920x1080 -font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 36 -fill white -draw "text 0,300 'L05'" $@
+	$(COMPOSE_RUN) convert -density 300 -resize 960x960 -background none $< -background "#231F20" -gravity center -extent 3840x2160 -font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 16 -fill white -draw "text 0,500 'L05'" $@
 
 .PHONY: setup
 setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png
