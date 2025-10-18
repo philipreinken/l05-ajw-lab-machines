@@ -4,4 +4,4 @@
 /.arp-cache
 /.make.*
 /*.override.*
-/vault.bin
+/*.bin
