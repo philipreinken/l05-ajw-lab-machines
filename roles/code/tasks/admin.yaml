@@ -1,0 +1,38 @@
+---
+
+- name: Initialise code directory
+  block:
+    - name: Check whether admin_code_dir exists
+      ansible.builtin.stat:
+        path: '{{ admin_code_dir }}'
+      register: admin_code_dir_stat
+
+    - name: Ensure empty code directory exists
+      when: not admin_code_dir_stat.stat.exists | bool or code_reset | bool
+      ansible.builtin.file:
+        path: '{{ admin_code_dir }}'
+        state: '{{ item }}'
+        mode: '0755'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+      with_items:
+        - absent
+        - directory
+
+    - name: Checkout repository
+      ansible.builtin.git:
+        repo: '{{ admin_code_repo_url }}'
+        dest: '{{ admin_code_dir }}'
+        version: main
+        single_branch: true
+    
+    - name: Generate compose.override.yaml
+      ansible.builtin.copy:
+        content: |
+          services:
+            base:
+              user: {{ ansible_user_uid }}:{{ ansible_user_gid }}
+        dest: '{{ admin_code_dir }}/compose.override.yaml'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: '0644'

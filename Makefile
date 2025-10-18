@@ -18,6 +18,10 @@ export ANSIBLE_HOST_KEY_CHECKING
 .make.inventory-macs.txt.asc:
 	gpg -r 0x4F212E8A056A0CCC --armor --encrypt-files inventory-macs.txt
 
+.make.ansible-galaxy-install: requirements.yaml
+	ansible-galaxy install -r $<
+	touch $@
+
 inventory-macs.txt: inventory-macs.txt.asc
 	gpg --decrypt $< > $@
 
@@ -31,23 +35,23 @@ files/wallpaper.png: files/darc/DARC_Raute.svg
 	$(COMPOSE_RUN) convert -density 300 -resize 960x960 -background none $< -background "#231F20" -gravity center -extent 3840x2160 -font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 16 -fill white -draw "text 0,500 'L05'" $@
 
 .PHONY: setup
-setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png
+setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png .make.ansible-galaxy-install
 	$(ANSIBLE_EXEC) $<
 
 .PHONY: reset
-reset: 01-reset.yaml $(ANSIBLE_INVENTORY)
+reset: 01-reset.yaml $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install
 	$(ANSIBLE_EXEC) $<
 
 .PHONY: applications
-applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
+applications: 10-applications.yaml $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install
 	$(ANSIBLE_EXEC) $<
 
 .PHONY: course
-course: 20-course.yaml $(ANSIBLE_INVENTORY)
+course: 20-course.yaml $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install
 	$(ANSIBLE_EXEC) $<
 
 .PHONY: course-copy-only
-course-copy-only: 20-course.yaml $(ANSIBLE_INVENTORY)
+course-copy-only: 20-course.yaml $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install
 	$(ANSIBLE_EXEC) -v $< -e code_copy_only=true
 
 .PHONY: full

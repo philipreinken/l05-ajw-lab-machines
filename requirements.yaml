@@ -6,4 +6,8 @@ collections:
 
 roles:
   - name: geerlingguy.security
-    version: 2.4.0
+    version: 3.0.0
+  - name: geerlingguy.docker
+    version: 7.7.0
+  - name: geerlingguy.ansible
+    version: 2.3.0

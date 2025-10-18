@@ -58,3 +58,6 @@
         mode: preserve
         directory_mode: '0755'
       loop: '{{ code_distribution }}'
+
+- include_tasks: admin.yaml
+  when: is_admin_host | default(false)

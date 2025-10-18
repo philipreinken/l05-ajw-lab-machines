@@ -6,3 +6,13 @@
     - role: geerlingguy.security
       become: true
     - role: general/classroom
+
+- name: Admin setup
+  hosts: all
+  roles:
+    - role: geerlingguy.docker
+      become: true
+      when: is_admin_host | default(false)
+    - role: geerlingguy.ansible
+      become: true
+      when: is_admin_host | default(false)

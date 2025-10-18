@@ -11,3 +11,6 @@ code_repo_auth: '{{ code_repo_user }}:{{ code_repo_pass }}'
 code_repo_url: 'https://{{ code_repo_auth }}@github.com/philipreinken/l05-ajw-sketches-electronics-lab.git'
 
 code_distribution: []
+
+admin_code_dir: '{{ ansible_env.HOME }}/.local/share/l05-ajw-lab-machines'
+admin_code_repo_url: 'https://github.com/philipreinken/l05-ajw-lab-machines.git'

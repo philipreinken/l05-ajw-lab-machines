@@ -2,3 +2,5 @@
 /inventory-macs.txt
 /files/*
 /.arp-cache
+/.make.*
+/*.override.*

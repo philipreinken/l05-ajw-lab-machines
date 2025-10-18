@@ -23,22 +23,23 @@
       loop: '{{ classroom.admins | mandatory }}'
       when: not destroy | bool
 
-    - name: Copy private admin SSH key
+    - name: Deploy admin SSH key
       become: true
       ansible.builtin.copy:
-        dest: '/home/{{ classroom.user.name | mandatory }}/.ssh/id_ed25519'
-        content: '{{ admin_ssh_private_key | mandatory }}'
+        dest: '/home/{{ classroom.user.name | mandatory }}/.ssh/{{ item }}'
+        content: '{{ admin_ssh_key.privateKey if item == "id_ed25519" else admin_ssh_key.publicKey }}'
         owner: '{{ classroom.user.name | mandatory }}'
         group: '{{ classroom.user.name | mandatory }}'
         mode: '0600'
-      when: not destroy | bool and classroom.user.is_admin | bool
+      loop: &ssh_key_list
+        - id_ed25519
+        - id_ed25519.pub
+      when: is_admin_host | default(false) | bool and not destroy | bool
 
-    - name: Copy public admin SSH key
+    - name: Ensure admin SSH key is absent
       become: true
-      ansible.builtin.copy:
-        dest: '/home/{{ classroom.user.name | mandatory }}/.ssh/id_ed25519.pub'
-        content: '{{ admin_ssh_public_key | mandatory }}'
-        owner: '{{ classroom.user.name | mandatory }}'
-        group: '{{ classroom.user.name | mandatory }}'
-        mode: '0644'
-      when: not destroy | bool and classroom.user.is_admin | bool
+      ansible.builtin.file:
+        path: '/home/{{ classroom.user.name | mandatory }}/.ssh/{{ item }}'
+        state: absent
+      loop: *ssh_key_list
+      when: not is_admin_host | default(false) | bool or destroy | bool
