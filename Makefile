@@ -1,4 +1,10 @@
 
+ifdef DEBUG
+ANSIBLE_EXEC = ansible-playbook -vv
+else
+ANSIBLE_EXEC = ansible-playbook
+endif
+
 ANSIBLE_INVENTORY = inventory.sh
 ANSIBLE_HOST_KEY_CHECKING = False
 
@@ -26,23 +32,23 @@ files/wallpaper.png: files/darc/DARC_Raute.svg
 
 .PHONY: setup
 setup: 00-setup.yaml $(ANSIBLE_INVENTORY) files/wallpaper.png
-	ansible-playbook $<
+	$(ANSIBLE_EXEC) $<
 
 .PHONY: reset
 reset: 01-reset.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook $<
+	$(ANSIBLE_EXEC) $<
 
 .PHONY: applications
 applications: 10-applications.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook $<
+	$(ANSIBLE_EXEC) $<
 
 .PHONY: course
 course: 20-course.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook -v $<
+	$(ANSIBLE_EXEC) $<
 
 .PHONY: course-copy-only
 course-copy-only: 20-course.yaml $(ANSIBLE_INVENTORY)
-	ansible-playbook -v $< -e code_copy_only=true
+	$(ANSIBLE_EXEC) -v $< -e code_copy_only=true
 
 .PHONY: full
 full: setup applications course

@@ -20,7 +20,25 @@
         user: '{{ classroom.user.name | mandatory }}'
         state: present
         key: '{{ item.ssh_key | mandatory }}'
-      loop: '{{ classroom.admin | default([]) }}'
+      loop: '{{ classroom.admins | mandatory }}'
       when: not destroy | bool
 
+    - name: Copy private admin SSH key
+      become: true
+      ansible.builtin.copy:
+        dest: '/home/{{ classroom.user.name | mandatory }}/.ssh/id_ed25519'
+        content: '{{ admin_ssh_private_key | mandatory }}'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: '0600'
+      when: not destroy | bool and classroom.user.is_admin | bool
 
+    - name: Copy public admin SSH key
+      become: true
+      ansible.builtin.copy:
+        dest: '/home/{{ classroom.user.name | mandatory }}/.ssh/id_ed25519.pub'
+        content: '{{ admin_ssh_public_key | mandatory }}'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: '0644'
+      when: not destroy | bool and classroom.user.is_admin | bool
