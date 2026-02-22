@@ -43,7 +43,9 @@ files/darc/%.svg: files/darc/%.eps
 	$(COMPOSE_RUN) eps2svg $< $@
 
 files/wallpaper.png: files/darc/DARC_Raute.svg
-	$(COMPOSE_RUN) convert -density 300 -resize 960x960 -background none $< -background "#231F20" -gravity center -extent 3840x2160 -font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 16 -fill white -draw "text 0,500 'L05'" $@
+	$(COMPOSE_RUN) convert -density 300 -resize 960x960 -background none $< -background "#231F20" -gravity center -extent 3840x2160 \
+		-font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Bold.ttf" -pointsize 16 -fill white -draw "text 0,500 'Amateurfunk in Essen'" \
+		-font "/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed.ttf" -pointsize 10 -draw "text 0,600 'AJW OV L05 Essen'" $@
 
 .PHONY: setup
 setup: 00-setup.yaml $(ANSIBLE_DEPS) files/wallpaper.png
