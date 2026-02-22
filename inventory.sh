@@ -12,6 +12,11 @@ if [ ! -f "$MAC_LIST_FILE" ]; then
   exit 1
 fi
 
+if [ -z "$(which arp-scan)" ] && [ -z "$(sudo which arp-scan)" ]; then
+  printf "Error: arp-scan is not installed; please install it and retry.\n"
+  exit 1
+fi
+
 function arp_scan() {
   local arp_scan_cmd;
 

@@ -1,0 +1,8 @@
+---
+
+- name: Update
+  hosts: classroom
+  become: true
+  become_user: '{{ classroom.user.name }}'
+  roles:
+    - role: general/update

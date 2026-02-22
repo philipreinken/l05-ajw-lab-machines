@@ -57,6 +57,10 @@ setup: 00-setup.yaml $(ANSIBLE_DEPS) files/wallpaper.png
 reset: 01-reset.yaml $(ANSIBLE_DEPS)
 	$(ANSIBLE_EXEC) $<
 
+.PHONY: update
+update: 02-update.yaml $(ANSIBLE_DEPS)
+	$(ANSIBLE_EXEC) $<
+
 .PHONY: applications
 applications: 10-applications.yaml $(ANSIBLE_DEPS)
 	$(ANSIBLE_EXEC) $<

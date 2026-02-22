@@ -1,0 +1,19 @@
+---
+
+- name: Update
+  block:
+    - name: Ensure system packages are up to date
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        autoclean: true
+        autoremove: true
+        update_cache: true
+        upgrade: "safe"
+
+    - name: Ensure flatpaks are up to date
+      ansible.builtin.command:
+        cmd: >-
+          flatpak --user update --noninteractive
+      register: flatpak_update_output
+      changed_when: "'/app' in flatpak_update_output.stdout"
