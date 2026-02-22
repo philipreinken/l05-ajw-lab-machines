@@ -5,7 +5,7 @@ if [ -n "${DEBUG:-}" ]; then
   set -x
 fi
 
-if [ -z "$(which arp-scan)" ] && [ -z "$(sudo which arp-scan)" ]; then
+if [ ! -x "/usr/bin/arp-scan" ] && [ ! -x "/usr/sbin/arp-scan" ]; then
   printf "Error: arp-scan is not installed; please install it and retry.\n"
   exit 1
 fi
