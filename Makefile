@@ -77,9 +77,9 @@ shutdown: $(ANSIBLE_INVENTORY)
 	ansible all -b -m community.general.shutdown
 
 .PHONY: view-vault
-view-vault: vault.bin
+view-vault: $(ANSIBLE_DEPS)
 	$(ANSIBLE_VAULT_VIEW_EXEC) $<
 
 .PHONY: edit-vault
-edit-vault: vault.bin
+edit-vault: $(ANSIBLE_DEPS)
 	$(ANSIBLE_VAULT_EDIT_EXEC) $<
