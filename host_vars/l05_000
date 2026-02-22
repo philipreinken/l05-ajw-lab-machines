@@ -1,6 +1,0 @@
----
-
-is_admin_host: true
-
-docker_users:
-  - L05

@@ -34,7 +34,7 @@
       loop: &ssh_key_list
         - id_ed25519
         - id_ed25519.pub
-      when: is_admin_host | default(false) | bool and not destroy | bool
+      when: inventory_hostname in admin_machines | default(false) | bool and not destroy | bool
 
     - name: Ensure admin SSH key is absent
       become: true
@@ -42,4 +42,4 @@
         path: '/home/{{ classroom.user.name | mandatory }}/.ssh/{{ item }}'
         state: absent
       loop: *ssh_key_list
-      when: not is_admin_host | default(false) | bool or destroy | bool
+      when: inventory_hostname not in admin_machines | default(false) | bool or destroy | bool

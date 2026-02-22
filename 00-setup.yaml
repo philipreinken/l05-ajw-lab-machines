@@ -12,7 +12,7 @@
   roles:
     - role: geerlingguy.docker
       become: true
-      when: is_admin_host | default(false)
+      when: inventory_hostname in admin_machines | default(false)
     - role: geerlingguy.ansible
       become: true
-      when: is_admin_host | default(false)
+      when: inventory_hostname in admin_machines | default(false)

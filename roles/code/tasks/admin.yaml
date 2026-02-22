@@ -25,7 +25,7 @@
         dest: '{{ admin_code_dir }}'
         version: main
         single_branch: true
-    
+
     - name: Generate compose.override.yaml
       ansible.builtin.copy:
         content: |
@@ -36,3 +36,13 @@
         owner: '{{ classroom.user.name | mandatory }}'
         group: '{{ classroom.user.name | mandatory }}'
         mode: '0644'
+
+    - name: Distribute vault
+      ansible.builtin.copy:
+        src: {{ item }}
+        dest: '{{ admin_code_dir }}/{{ item }}'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: '0644'
+      with_items:
+        - vault.bin

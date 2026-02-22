@@ -5,17 +5,14 @@ if [ -n "${DEBUG:-}" ]; then
   set -x
 fi
 
-MAC_LIST_FILE="inventory-macs.txt"
-
-if [ ! -f "$MAC_LIST_FILE" ]; then
-  printf "Error: MAC address list file '%s' not found.\n" "$MAC_LIST_FILE" >&2
-  exit 1
-fi
-
 if [ -z "$(which arp-scan)" ] && [ -z "$(sudo which arp-scan)" ]; then
   printf "Error: arp-scan is not installed; please install it and retry.\n"
   exit 1
 fi
+
+function inventory_macs() {
+  make -s view-vault | yq -r '.vault_inventory_macs'
+}
 
 function arp_scan() {
   local arp_scan_cmd;
@@ -54,7 +51,7 @@ function ip_for_mac() {
 }
 
 function full_info() {
-  while read -r -a line; do
+  inventory_macs | while read -r -a line; do
     # echo "Processing MAC: ${line[0]}, Hostname: ${line[1]}" >&2
 
     local host_ip; host_ip=$(ip_for_mac "${line[0]}")
@@ -69,7 +66,7 @@ function full_info() {
       --arg hostname "${line[1]}" \
       --arg ip "${host_ip}" \
       '{ inventory_hostname: $hostname, ansible_user: "schule", ansible_host: $ip, security_ssh_allowed_users: [ "schule", "L05" ] }'
-  done <${MAC_LIST_FILE} | jq -s
+  done | jq -s
 }
 
 function inventory() {

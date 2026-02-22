@@ -7,3 +7,4 @@ classroom:
   admins:
     - ssh_key: 'https://github.com/philipreinken.keys'
     - ssh_key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP3tXOe5KJf0p58O9uJ8ot6afpsgNxWMvM35J4OwkrsV'
+  admin_machines: "{{ vault_admin_machines | mandatory }}"

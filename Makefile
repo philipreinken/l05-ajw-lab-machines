@@ -2,16 +2,19 @@
 ANSIBLE_EXEC = ansible-playbook
 ANSIBLE_VAULT_ENC_EXEC = ansible-vault encrypt
 ANSIBLE_VAULT_VIEW_EXEC = ansible-vault view
+ANSIBLE_VAULT_EDIT_EXEC = ansible-vault edit
 
 # if the bitwarden is installed, use it to get the vault password; otherwise ask for it interactively
 ifeq ($(shell which bw 2>/dev/null),)
 ANSIBLE_EXEC += -e @vault.bin --ask-vault-pass
 ANSIBLE_VAULT_ENC_EXEC += --ask-vault-pass
 ANSIBLE_VAULT_VIEW_EXEC += --ask-vault-pass
+ANSIBLE_VAULT_EDIT_EXEC += --ask-vault-pass
 else
 ANSIBLE_EXEC += -e @vault.bin --vault-password-file=vault-pass-bw.sh
 ANSIBLE_VAULT_ENC_EXEC += --vault-password-file=vault-pass-bw.sh
 ANSIBLE_VAULT_VIEW_EXEC += --vault-password-file=vault-pass-bw.sh
+ANSIBLE_VAULT_EDIT_EXEC += --vault-password-file=vault-pass-bw.sh
 endif
 
 ifdef DEBUG
@@ -29,16 +32,9 @@ export ANSIBLE_INVENTORY
 export ANSIBLE_HOST_KEY_CHECKING
 export ANSIBLE_VAULT_FILE
 
-.PHONY: .make.inventory-macs.txt.bin
-.make.inventory-macs.txt.bin:
-	$(ANSIBLE_VAULT_ENC_EXEC) --output inventory-macs.txt.bin inventory-macs.txt
-
 .make.ansible-galaxy-install: requirements.yaml
 	ansible-galaxy install -r $<
 	touch $@
-
-inventory-macs.txt: inventory-macs.txt.bin
-	$(ANSIBLE_VAULT_VIEW_EXEC) $< > $@
 
 files/darc/%.eps: files/DARC_Logo_und_Raute.zip # https://www.darc.de/presse/downloads/#c154010
 	$(COMPOSE_RUN) unzip -o $< -d files/darc
@@ -79,3 +75,11 @@ full: setup applications course
 .PHONY: shutdown
 shutdown: $(ANSIBLE_INVENTORY)
 	ansible all -b -m community.general.shutdown
+
+.PHONY: view-vault
+view-vault: vault.bin
+	$(ANSIBLE_VAULT_VIEW_EXEC) $<
+
+.PHONY: edit-vault
+edit-vault: vault.bin
+	$(ANSIBLE_VAULT_EDIT_EXEC) $<

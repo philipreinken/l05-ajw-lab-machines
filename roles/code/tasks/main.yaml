@@ -60,4 +60,4 @@
       loop: '{{ code_distribution }}'
 
 - include_tasks: admin.yaml
-  when: is_admin_host | default(false)
+  when: inventory_hostname in admin_machines | default(false)
