@@ -23,7 +23,7 @@ endif
 
 ANSIBLE_INVENTORY = inventory.sh
 ANSIBLE_HOST_KEY_CHECKING = False
-ANSIBLE_DEPS = $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install vault.bin
+ANSIBLE_DEPS = vault.bin $(ANSIBLE_INVENTORY) .make.ansible-galaxy-install
 
 COMPOSE_RUN = docker compose run --rm
 COMPOSE_RUN_PRIVILEGED = $(COMPOSE_RUN) -u root:root
