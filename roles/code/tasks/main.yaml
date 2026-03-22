@@ -26,6 +26,17 @@
         dest: '{{ code_dir }}'
         version: main
         single_branch: true
+      when: code_repo_url is match(".*.git")
+    
+    - name: Copy repository
+      ansible.builtin.copy:
+        src: '{{ code_repo_url }}'
+        dest: '{{ code_dir }}'
+        owner: '{{ classroom.user.name | mandatory }}'
+        group: '{{ classroom.user.name | mandatory }}'
+        mode: preserve
+        directory_mode: '0755'
+      when: not (code_repo_url is match(".*.git"))
 
 - name: Copy to destination directories
   when: code_distribution is defined and code_distribution | length > 0
